@@ -8,16 +8,32 @@
 
 plugins {
     // Apply the java-library plugin to add support for the Java Library.
-    id 'java-library'
+    id 'java'
     
     // We want to be able to make a jar and run it.
     id 'application'
 }
 
+sourceSets {
+	main {
+		java {
+			srcDir 'src/main'
+		}
+		output.resourcesDir = 'assets'
+	}
+	test {
+		java {
+			srcDir 'src/test'
+		}
+		output.resourcesDir = 'src/test'
+	}
+}
+
+project.ext.lwjglVersion = '3.2.2'
+project.ext.lwjglNatives = 'natives-windows'
+
 repositories {
-    // Use jcenter for resolving dependencies.
-    // You can declare any Maven/Ivy/file repository here.
-    jcenter()
+    mavenCentral()
 }
 
 application {
@@ -25,6 +41,18 @@ application {
 }
 
 dependencies {
+	// LWGJL
+	implementation "org.lwjgl:lwjgl:$lwjglVersion"
+	implementation "org.lwjgl:lwjgl-glfw:$lwjglVersion"
+	implementation "org.lwjgl:lwjgl-openal:$lwjglVersion"
+	implementation "org.lwjgl:lwjgl-opengl:$lwjglVersion"
+	implementation "org.lwjgl:lwjgl-stb:$lwjglVersion"
+	runtimeOnly "org.lwjgl:lwjgl:$lwjglVersion:$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-glfw:$lwjglVersion:$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-openal:$lwjglVersion:$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-opengl:$lwjglVersion:$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-stb:$lwjglVersion:$lwjglNatives"
+
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 }
