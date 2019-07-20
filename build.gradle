@@ -19,13 +19,13 @@ sourceSets {
 		java {
 			srcDir 'src/main'
 		}
-		output.resourcesDir = 'assets'
+		resources.srcDirs = ['assets']
 	}
 	test {
 		java {
 			srcDir 'src/test'
 		}
-		output.resourcesDir = 'src/test'
+		resources.srcDirs = ['src/test/assets']
 	}
 }
 
@@ -56,4 +56,3 @@ dependencies {
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 }
-
