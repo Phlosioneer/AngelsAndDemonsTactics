@@ -20,7 +20,7 @@ OpenJDK 11 is no longer available for download from Oracle. So we have to use an
 
 3) Extract the zip file, and place its contents in `C:\Program Files\gradle-5.5.1`.
 
-## Setting up the command line (optional)
+## Setting up the command line: (Required)
 
 1) Open the Windows Control Panel (type "Control Panel" in the Cortana searchbar) and open the "System" panel.
 
@@ -34,19 +34,31 @@ OpenJDK 11 is no longer available for download from Oracle. So we have to use an
 
 6) Type `C:\Program Files\Java\openjdk-11.0.2\bin` and press Enter.
 
-7) Click the "New" button again, and type `C:\Program Files\gradle-5.5.1\bin`. Press the "Ok" button.
+7) Select the entry you just typed. Now press the "Move up" button until that entry is at the top of the Path list.
 
-8) In the section labeled `System Variables`, click the "New..." button.
+8) Click the "New" button again, and type `C:\Program Files\gradle-5.5.1\bin`. Press the "Ok" button.
 
-9) For "Variable name", type `JAVA_HOME`. For "Variable value", type `C:\Program Files\Java\openjdk-11.0.2`. Press the "Ok" button.
+9) In the section labeled `System Variables`, click the "New..." button.
 
-10) Click the "New..." button again. Enter `GRADLE_HOME` for the name and `C:\Program Files\gradle-5.5.1` for the vaule. Press the "Ok" button.
+10) For "Variable name", type `JAVA_HOME`. For "Variable value", type `C:\Program Files\Java\openjdk-11.0.2`. Press the "Ok" button.
 
-11) Press "Ok" on all open windows.
+11) Click the "New..." button again. Enter `GRADLE_HOME` for the name and `C:\Program Files\gradle-5.5.1` for the vaule. Press the "Ok" button.
+
+12) Press "Ok" on all open windows.
 
 - If you have any open Command Prompt or Powershell windows, you won't see the changes. The changes only apply to any window created *after* you save them.
 
+You can test your changes by opening either Command Prompt or Powershell and typing `java -version`. You should see the following:
+```
+openjdk version "11.0.2" 2019-01-15
+OpenJDK Runtime Environment 18.9 (build 11.0.2+9)
+OpenJDK 64-Bit Server VM 18.9 (build 11.0.2+9, mixed mode)
+```
+
 ## Setup Eclipse:
+
+Note: You must have a version of Eclipse that supports Java 11. (Eclipse version `2018-09 (4.9)` or later.)
+You can check your Eclipse version by going to Help->About Eclipse IDE.
 
 1) Go to Window->Preferences->Java->Installed JREs.
 
@@ -84,9 +96,9 @@ OpenJDK 11 is no longer available for download from Oracle. So we have to use an
 
 3) If you see a screen with just info about gradle features (no text boxes), click the "Don't show this again" checkmark and press the "Next >" button.
 
-4) Click the "Browse..." button, and navigate to the AngelsAndDemonsTactics folder. It should be inside your Eclipse's workspace folder (which defaults to C:\Users\<Username>\workspace). With that folder selected, click the "Open" button.
+4) Click the "Browse..." button, and navigate to the AngelsAndDemonsTactics folder. The path is printed next to the name of the project in the `Git Repositories` window. Eclipse will plut it at\ `C:\Users\<username>\git\AngelsAndDemonsTactics` by default.
 
-5) Confirm that the `Project root` field reads something like "blah/blah/blah/AngelsAndDemonsTactics". Click the "Next >" button.
+5) Confirm that the `Project root` field reads something like "blah\\blah\\blah\\AngelsAndDemonsTactics". Click the "Next >" button.
 
 6) Click the checkbox next to `Override workspace settings`.
 
@@ -112,7 +124,7 @@ OpenJDK 11 is no longer available for download from Oracle. So we have to use an
 
 4) Under the `Gradle Tasks` section, click the "Add" button.
 
-5) Type `run`, and press Enter. (The whole line should read `run`, not `task run`.)
+5) Type `run`. (The whole line should read `run`, not `task run`.)
 
 6) Under the `Working Directory` section, click the `Workspace...` button.
 
