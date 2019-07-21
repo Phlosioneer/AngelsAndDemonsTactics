@@ -9,6 +9,7 @@ public class BackgroundRenderer {
     public BackgroundRenderer(String imageToLoad, int xCoord, int yCoord) { // TODO add image file variable
 	renderOriginX = xCoord; // set the class variable to the input varables
 	renderOriginY = yCoord;
+	loadImage(imageToLoad);
     }
 
     private void loadImage(String filename) { // TODO create image loader
