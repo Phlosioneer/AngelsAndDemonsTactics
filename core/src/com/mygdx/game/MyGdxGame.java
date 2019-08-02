@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -11,7 +12,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch; //class used to draw 2D images
 	Texture backgroundImg; //create a texture object (stored in VRAM)
 	private OrthographicCamera mainCamera; //creates the main camera object
-	private java.awt.Rectangle background;
+	private Rectangle background;
 	
 	@Override
 	public void create () { //runs once on game startup
@@ -31,7 +32,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1); //sets the 'clear' color for openGL (red, green, blue, alpha)
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);//clears the screen, my understanding is it sets it to the 'clear' color
 		mainCamera.update();//updates the camera every frame
-		batch.setProjectionMatrix(backgroundCamera.combined);//tells the batch system to use the camera's coord system
+		batch.setProjectionMatrix(mainCamera.combined);//tells the batch system to use the camera's coord system
 		batch.begin(); //used to please openGL. everything between batch.begin and batch.end will render
 		//once the batch.end command is sent
 		batch.draw(backgroundImg, background.x, background.y);
