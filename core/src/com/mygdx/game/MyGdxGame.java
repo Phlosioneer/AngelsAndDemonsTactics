@@ -4,14 +4,14 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+//import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch; //class used to draw 2D images
-	Texture backgroundImg; //create a texture object (stored in VRAM)
-	Texture gridImg; //stores the grid in VRAM
+    public TextureLoader backgroundImg; //create a texture object (stored in VRAM)
+	TextureLoader gridImg; //stores the grid in VRAM
 	private OrthographicCamera mainCamera; //creates the main camera object
 	private Rectangle background;
 	
@@ -21,8 +21,9 @@ public class MyGdxGame extends ApplicationAdapter {
 		mainCamera.setToOrtho(false, 1920, 1080); //sets camera to always show a 1920x1080 view
 		//TODO decide on game resolution
 		batch = new SpriteBatch(); //instantize the SpriteBatch
-		backgroundImg = new Texture("Grass 4x4.png"); //load background texture
-		gridImg = new Texture("grid.png"); //load grid texture
+		backgroundImg = new TextureLoader("Grass 4x4.png"); //load background texture
+		gridImg = new TextureLoader("grid.png"); //load grid texture
+        LevelGrid backgroundGrid = new LevelGrid(backgroundImg);
 		background = new Rectangle(); //this will determine the position of the background
 		background.x = 0; //set the x/y coords of the background
 		background.y = 0;
@@ -37,14 +38,15 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.setProjectionMatrix(mainCamera.combined);//tells the batch system to use the camera's coord system
 		batch.begin(); //used to please openGL. everything between batch.begin and batch.end will render
 		//once the batch.end command is sent
-		batch.draw(backgroundImg, background.x, background.y);
-		batch.draw(gridImg, background.x, background.y);
+		batch.draw(backgroundImg.textureReturn(), background.x, background.y);
+		batch.draw(gridImg.textureReturn(), background.x, background.y);
 		batch.end();
 	}
 	
 	@Override
 	public void dispose () { //cleanup for shutting down the game
 		batch.dispose(); //clean the loaded files from memory to help Java's garbage collection
-		backgroundImg.dispose();
+        backgroundImg.disposeTexture();
+        gridImg.disposeTexture();
 	}
 }
