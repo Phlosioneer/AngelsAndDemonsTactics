@@ -1,6 +1,6 @@
-//simple class to create texture objects a little easier
+//class in unneeded at this time, so commenting out
 //TODO find other uses for this class
-package com.mygdx.game;
+/*package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Texture;
 public class TextureLoader {
@@ -19,3 +19,4 @@ public class TextureLoader {
         loadedTexture.dispose();
     }
 }
+*/

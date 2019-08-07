@@ -1,22 +1,23 @@
 package com.mygdx.game;
 //this class is to show the program where the squares of the grid are
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 
 public class LevelGrid {
 
-    private TextureLoader gridBackground; //store texture that we're calculating the grid for
+    private Texture gridBackground; //store texture that we're calculating the grid for
     private int bgSizeX; //store X axis size of texture
     private int bgSizeY; //store Y axis size of texture
     private ArrayList<GridSquare> gridSquares; //data structure to hold all the GridSquare data
 
-    LevelGrid(TextureLoader backgroundTexture){
+    LevelGrid(Texture backgroundTexture){
         gridBackground = backgroundTexture; //set the texture
         gridSquares = new ArrayList<>();
-        bgSizeX = gridBackground.textureReturn().getWidth(); //get the x value of texture
-        bgSizeY = gridBackground.textureReturn().getHeight(); //get the y value of texture
+        bgSizeX = gridBackground.getWidth(); //get the x value of texture
+        bgSizeY = gridBackground.getHeight(); //get the y value of texture
         int horizontalGridSize = bgSizeX / 66; //get the number of squares horizontally
         int verticalGridSize = bgSizeY / 66; //get the number of squares vertically
         generateGrid(horizontalGridSize, verticalGridSize); //generates the grid
@@ -28,11 +29,17 @@ public class LevelGrid {
         int lLXHolder; int lLYHolder; int lRXHolder; int lRYHolder;
         String gridCoordHolder; //holds coordinate of square in grid
         for(int i = 0; i<ySize; i++) { //iterate for every grid square vertically
+            if(yCoord > bgSizeY){
+                break;
+            }
 
             int xCoord = 0; //reset the X Coord back to 0 to generate new row
 
             for (int i2 = 0; i2 < xSize; i2++) { //iterate for every grid square horizontally
 
+                if(xCoord > bgSizeX){
+                    break;
+                }
                 int yOffset = yCoord + 65; //holder for the upper edge of the square
                 lLXHolder = xCoord; //set the lower left cordinates to the the current base x and y values
                 lLYHolder = yCoord;
