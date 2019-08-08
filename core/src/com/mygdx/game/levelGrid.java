@@ -51,7 +51,8 @@ public class LevelGrid {
                 uRXHolder = xCoord; //set the upper right values of the square
                 uRYHolder = yOffset;
                 gridCoordHolder = "TBD"; //TODO set up overall grid coordinates
-                GridSquare tempSquare = new GridSquare(lLXHolder, lLYHolder,lRXHolder,lRYHolder, uLXHolder, uLYHolder, uRXHolder, uRYHolder, gridCoordHolder);
+                GridSquare tempSquare = new GridSquare(lLXHolder, lLYHolder,lRXHolder,lRYHolder, uLXHolder, uLYHolder,
+                        uRXHolder, uRYHolder, i2, i);
                 //creates GridSquare to be put into array list
                 gridSquares.add(tempSquare); //adds square to the list
             }
@@ -60,22 +61,61 @@ public class LevelGrid {
         }
     }
 
+    public int gridSize(){
+        return gridSquares.size();
+    }
+
+    public Vector2 getSquareOrigin(int whichSquare){ //return the lower left vertext of square whichSquare in the arrayList
+        return gridSquares.get(whichSquare).getBaseCoords();
+    }
+
+    public Vector2[] getSquareBounds(Vector2 whichSqInGrid){
+        //this returns an array of vector2's that tell the bounds for the selected square
+        //vertex bounds are given in [0] = lower left, [1] = lower right, [2] = upper left, and [3] = upper right
+        for (int i = 0; i < gridSquares.size(); i++){
+            if(whichSqInGrid == gridSquares.get(i).getSquareLocation()){
+                return gridSquares.get(i).getSquareVertices();
+            }
+        }
+        return null;
+    }
+
+
+    //Line break to seperate classes-----------------------------------------------------------------------------------
+
+
     private class GridSquare{
         private Vector2 upperLVertex;
         private Vector2 upperRVertex;
         private Vector2 lowerLVertex;
         private Vector2 lowerRVertex;
-        private String gridCoordinates;
+        private Vector2 locationInGrid;
 
-        GridSquare(int lLX, int lLY, int lRX, int lRY, int uLX, int uLY, int uRX, int uRY, String gridLocation){
-            upperLVertex = new Vector2(uLX, uLY);
+
+        GridSquare(int lLX, int lLY, int lRX, int lRY, int uLX, int uLY, int uRX, int uRY, int gridXLocation,
+                   int gridYLocation){
+            upperLVertex = new Vector2(uLX, uLY); //these set Vector2's for each of the vertexs of a square in the grid
             upperRVertex = new Vector2(uRX, uRY);
             lowerLVertex = new Vector2(lLX, lLY);
             lowerRVertex = new Vector2(lRX, lRY);
-            gridCoordinates = gridLocation;
+            locationInGrid = new Vector2(gridXLocation, gridYLocation);
+        }
+        public Vector2 getBaseCoords(){ //return the origin of the square for rendering purposes
+            return lowerLVertex;
         }
 
-    }
+        public Vector2 getSquareLocation(){ //returns the stored Location in grid as a vector2
+            return locationInGrid;
+        }
 
-}
+        public Vector2[] getSquareVertices(){ //returns the four vertices of the square for input checking purposes
+            Vector2[] verticesToReturn = new Vector2[4];
+                verticesToReturn[0] = lowerLVertex;
+                verticesToReturn[1] = lowerRVertex;
+                verticesToReturn[2] = upperLVertex;
+                verticesToReturn[3] = upperRVertex;
+                return verticesToReturn;
+            }
+        }
+    }
 
