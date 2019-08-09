@@ -3,6 +3,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
 
@@ -75,6 +76,19 @@ public class LevelGrid {
         for (int i = 0; i < gridSquares.size(); i++){
             if(whichSqInGrid == gridSquares.get(i).getSquareLocation()){
                 return gridSquares.get(i).getSquareVertices();
+            }
+        }
+        return null;
+    }
+
+    public Vector2 findMouseOnGrid(Vector3 mouseCoords){
+        Vector3 inputCoords = mouseCoords;
+        float fMouseX = inputCoords.x;
+        float fMouseY = inputCoords.y;
+        for (int i = 0; i < gridSquares.size(); i++){
+            if (fMouseX >= gridSquares.get(i).lowerLVertex.x && fMouseX <= gridSquares.get(i).lowerRVertex.x
+            && fMouseY >= gridSquares.get(i).lowerRVertex.y && fMouseY <= gridSquares.get(i).upperRVertex.y){
+                return gridSquares.get(i).lowerLVertex;
             }
         }
         return null;
