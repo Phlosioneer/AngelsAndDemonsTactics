@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -17,7 +16,8 @@ public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch; //class used to draw 2D images
     public Texture backgroundImg; //create a texture object (stored in VRAM)
 	Texture gridImg; //stores the grid in VRAM
-	BasicUnit testUnit; //VRAM, you know the drill
+	BasicUnit testUnit;
+    BasicUnit selectedUnit;//unit player has selected currently
 	private OrthographicCamera mainCamera; //creates the main camera object
 	private Rectangle background;
     LevelGrid backgroundGrid;
@@ -25,8 +25,8 @@ public class MyGdxGame extends ApplicationAdapter {
 	private int mouseY;
 	private Vector3 screenMousePosition; // holds the mouse coordinates in screen coordinates (origin at top right)
 	private Vector3 cameraMousePosition; //holds the mouse coordinates in world/camera coordinates (origin at bottom right)
-    Vector2 currentUnitCoords = new Vector2(0, 0);
-	
+    Vector2 currentUnitCoords = new Vector2(0, 0); //vector to start test unit at origin square
+
 	@Override
 	public void create () { //runs once on game startup
 		mainCamera = new OrthographicCamera();
@@ -35,8 +35,12 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch = new SpriteBatch(); //instantize the SpriteBatch
 		backgroundImg = new Texture("Grass 4x4.png"); //load background texture
 		gridImg = new Texture("grid.png"); //load grid texture
-		testUnit = new BasicUnit("test_unit.png", new Vector2(1,1), backgroundGrid);
-        backgroundGrid = new LevelGrid(backgroundImg);
+
+        //MUST BE CALLED BEFORE GENERATING UNITS -------------------------------------------------
+        backgroundGrid = new LevelGrid(backgroundImg); //generates the grid for the system.
+        //----------------------------------------------------------------------------------------
+
+        testUnit = new BasicUnit("test_unit.png", new Vector2(1,1), backgroundGrid);
 		background = new Rectangle(); //this will determine the position of the background
 		background.x = 0; //set the x/y coords of the background
 		background.y = 0;
@@ -54,9 +58,14 @@ public class MyGdxGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1); //sets the 'clear' color for openGL (red, green, blue, alpha)
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);//clears the screen, my understanding is it sets it to the 'clear' color
 		mainCamera.update();//updates the camera every frame
-        if(Gdx.input.isTouched()){
+        if(Gdx.input.isTouched() && backgroundGrid.getSquareInGrid(currentMouseGridSquare).isUnitHere() == true){
+            //selects the unit clicked on if the square says there is a unit there
+            selectedUnit = testUnit;
+        }
+        if(Gdx.input.isTouched() && selectedUnit != null){ //update unit position on click, if a unit is selected
             currentUnitCoords = currentMouseGridSquare;
-            testUnit.setUnitCoords(currentUnitCoords);
+            selectedUnit.setUnitCoords(currentUnitCoords);
+            selectedUnit = null; //deselects the unit
         }
         //TEMP CODE------------------------------------------------------------------------------------------------
 
