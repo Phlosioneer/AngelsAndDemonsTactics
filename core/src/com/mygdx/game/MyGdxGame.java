@@ -17,7 +17,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch; //class used to draw 2D images
     public Texture backgroundImg; //create a texture object (stored in VRAM)
 	Texture gridImg; //stores the grid in VRAM
-	Texture testUnit; //VRAM, you know the drill
+	BasicUnit testUnit; //VRAM, you know the drill
 	private OrthographicCamera mainCamera; //creates the main camera object
 	private Rectangle background;
     LevelGrid backgroundGrid;
@@ -35,7 +35,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch = new SpriteBatch(); //instantize the SpriteBatch
 		backgroundImg = new Texture("Grass 4x4.png"); //load background texture
 		gridImg = new Texture("grid.png"); //load grid texture
-		testUnit = new Texture("test_unit.png");
+		testUnit = new BasicUnit("test_unit.png", new Vector2(1,1), backgroundGrid);
         backgroundGrid = new LevelGrid(backgroundImg);
 		background = new Rectangle(); //this will determine the position of the background
 		background.x = 0; //set the x/y coords of the background
@@ -50,11 +50,13 @@ public class MyGdxGame extends ApplicationAdapter {
 	    screenMousePosition = new Vector3(mouseX, mouseY, 0 ); //switch mouse coords to camera based coords
 	    cameraMousePosition = mainCamera.unproject(screenMousePosition);
 	    Vector2 currentMouseGridSquare = backgroundGrid.findMouseOnGrid(cameraMousePosition);
+	    //gets the grid square in grid coordinates that the mouse is in, easier to pass to other objects then true coords
 		Gdx.gl.glClearColor(0, 0, 0, 1); //sets the 'clear' color for openGL (red, green, blue, alpha)
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);//clears the screen, my understanding is it sets it to the 'clear' color
 		mainCamera.update();//updates the camera every frame
         if(Gdx.input.isTouched()){
             currentUnitCoords = currentMouseGridSquare;
+            testUnit.setUnitCoords(currentUnitCoords);
         }
         //TEMP CODE------------------------------------------------------------------------------------------------
 
@@ -68,7 +70,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		//once the batch.end command is sent
 		batch.draw(backgroundImg, background.x, background.y); //draw the background
 		batch.draw(gridImg, background.x, background.y); //draw the grid
-		batch.draw(testUnit, currentUnitCoords.x, currentUnitCoords.y); //draw the test unit at the mouse location
+		batch.draw(testUnit.unitTextureReturn(), testUnit.getRenderCoords().x, testUnit.getRenderCoords().y);
+		//draw the test unit at the clicked location
 		batch.end();
 	}
 	
@@ -77,6 +80,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.dispose(); //clean the loaded files from memory to help Java's garbage collection
         backgroundImg.dispose();
         gridImg.dispose();
-        testUnit.dispose();
+        testUnit.unitTextureReturn().dispose();
 	}
 }

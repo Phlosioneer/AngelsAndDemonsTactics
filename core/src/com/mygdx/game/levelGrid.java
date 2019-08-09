@@ -55,6 +55,7 @@ public class LevelGrid {
                 GridSquare tempSquare = new GridSquare(lLXHolder, lLYHolder,lRXHolder,lRYHolder, uLXHolder, uLYHolder,
                         uRXHolder, uRYHolder, i2, i);
                 //creates GridSquare to be put into array list
+                //creates GridSquare to be put into array list
                 gridSquares.add(tempSquare); //adds square to the list
             }
 
@@ -66,8 +67,13 @@ public class LevelGrid {
         return gridSquares.size();
     }
 
-    public Vector2 getSquareOrigin(int whichSquare){ //return the lower left vertext of square whichSquare in the arrayList
-        return gridSquares.get(whichSquare).getBaseCoords();
+    public Vector2 getSquareOrigin(Vector2 squareLocation){ //return the lower left vertext of square whichSquare in the arrayList
+        for (int i = 0; i < gridSquares.size(); i++){
+            if (squareLocation == gridSquares.get(i).getSquareLocation()){
+                return gridSquares.get(i).getBaseCoords();
+            }
+        }
+        return new Vector2(0,0);
     }
 
     public Vector2[] getSquareBounds(Vector2 whichSqInGrid){
@@ -82,13 +88,12 @@ public class LevelGrid {
     }
 
     public Vector2 findMouseOnGrid(Vector3 mouseCoords){
-        Vector3 inputCoords = mouseCoords;
-        float fMouseX = inputCoords.x;
-        float fMouseY = inputCoords.y;
+        float fMouseX = mouseCoords.x;
+        float fMouseY = mouseCoords.y;
         for (int i = 0; i < gridSquares.size(); i++){
             if (fMouseX >= gridSquares.get(i).lowerLVertex.x && fMouseX <= gridSquares.get(i).lowerRVertex.x
             && fMouseY >= gridSquares.get(i).lowerRVertex.y && fMouseY <= gridSquares.get(i).upperRVertex.y){
-                return gridSquares.get(i).lowerLVertex;
+                return gridSquares.get(i).locationInGrid;
             }
         }
         return null;
