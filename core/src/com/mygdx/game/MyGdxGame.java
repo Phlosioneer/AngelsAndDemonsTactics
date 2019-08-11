@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -17,7 +18,7 @@ public class MyGdxGame extends ApplicationAdapter {
     public Texture backgroundImg; //create a texture object (stored in VRAM)
 	Texture gridImg; //stores the grid in VRAM
 	BasicUnit testUnit;
-    BasicUnit selectedUnit;//unit player has selected currently
+    BasicUnit selectedUnit = null;//unit player has selected currently
 	private OrthographicCamera mainCamera; //creates the main camera object
 	private Rectangle background;
     LevelGrid backgroundGrid;
@@ -25,7 +26,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private int mouseY;
 	private Vector3 screenMousePosition; // holds the mouse coordinates in screen coordinates (origin at top right)
 	private Vector3 cameraMousePosition; //holds the mouse coordinates in world/camera coordinates (origin at bottom right)
-    Vector2 currentUnitCoords = new Vector2(0, 0); //vector to start test unit at origin square
+    Vector2 currentUnitCoords = new Vector2(1, 1); //vector to start test unit at origin square
 
 	@Override
 	public void create () { //runs once on game startup
@@ -40,7 +41,7 @@ public class MyGdxGame extends ApplicationAdapter {
         backgroundGrid = new LevelGrid(backgroundImg); //generates the grid for the system.
         //----------------------------------------------------------------------------------------
 
-        testUnit = new BasicUnit("test_unit.png", new Vector2(1,1), backgroundGrid);
+        testUnit = new BasicUnit("PeaceAngel (1).png", new Vector2(1,1), backgroundGrid);
 		background = new Rectangle(); //this will determine the position of the background
 		background.x = 0; //set the x/y coords of the background
 		background.y = 0;
@@ -49,20 +50,35 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	@Override
 	public void render () { //frame update, aka main game loop
+		BitmapFont testFont = new BitmapFont(); //for drawing text
 	    mouseX = Gdx.input.getX(); //get mouse coordinates in screen space
 	    mouseY = Gdx.input.getY();
 	    screenMousePosition = new Vector3(mouseX, mouseY, 0 ); //switch mouse coords to camera based coords
 	    cameraMousePosition = mainCamera.unproject(screenMousePosition);
 	    Vector2 currentMouseGridSquare = backgroundGrid.findMouseOnGrid(cameraMousePosition);
+
+	    //displays mouse coordinates on screen
+		String mouseXPos = Float.toString(backgroundGrid.findMouseOnGrid(cameraMousePosition).x);
+		String mouseYPos = Float.toString(backgroundGrid.findMouseOnGrid(cameraMousePosition).y);
+		CharSequence str = mouseXPos + " , " + mouseYPos;
+		// end mouse coord display
+
+		//for testUnit coord display
+		String testUnitX = Float.toString(testUnit.currentLocation().x);
+		String testUnitY = Float.toString(testUnit.currentLocation().y);
+		CharSequence str2 = testUnitX + " , " + testUnitY;
+		//end testUnit coord display
+
 	    //gets the grid square in grid coordinates that the mouse is in, easier to pass to other objects then true coords
 		Gdx.gl.glClearColor(0, 0, 0, 1); //sets the 'clear' color for openGL (red, green, blue, alpha)
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);//clears the screen, my understanding is it sets it to the 'clear' color
 		mainCamera.update();//updates the camera every frame
-        if(Gdx.input.isTouched() && backgroundGrid.getSquareInGrid(currentMouseGridSquare).isUnitHere() == true){
+        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && selectedUnit == null && backgroundGrid.findMouseOnGrid(cameraMousePosition).x == testUnit.currentLocation().x
+				&& backgroundGrid.findMouseOnGrid(cameraMousePosition).y == testUnit.currentLocation().y){
             //selects the unit clicked on if the square says there is a unit there
             selectedUnit = testUnit;
         }
-        if(Gdx.input.isTouched() && selectedUnit != null){ //update unit position on click, if a unit is selected
+        else if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && selectedUnit != null){ //update unit position on click, if a unit is selected
             currentUnitCoords = currentMouseGridSquare;
             selectedUnit.setUnitCoords(currentUnitCoords);
             selectedUnit = null; //deselects the unit
@@ -81,6 +97,16 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.draw(gridImg, background.x, background.y); //draw the grid
 		batch.draw(testUnit.unitTextureReturn(), testUnit.getRenderCoords().x, testUnit.getRenderCoords().y);
 		//draw the test unit at the clicked location
+		testFont.draw(batch, str, 140, 200);
+		testFont.draw(batch, str2, 300, 200);
+		if (selectedUnit != null){ //tests to figure out how to get shit to work
+			batch.draw(testUnit.unitTextureReturn(), 55, 55);
+		}
+		if(backgroundGrid.findMouseOnGrid(cameraMousePosition).x == testUnit.currentLocation().x
+				&& backgroundGrid.findMouseOnGrid(cameraMousePosition).y == testUnit.currentLocation().y){ //TODO trying to get this line of code to work
+			batch.draw(testUnit.unitTextureReturn(), 100, 600);
+		}
+
 		batch.end();
 	}
 	
