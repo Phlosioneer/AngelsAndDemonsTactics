@@ -50,31 +50,33 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	@Override
 	public void render () { //frame update, aka main game loop
-		BitmapFont testFont = new BitmapFont(); //for drawing text
+		BitmapFont testFont = new BitmapFont(); //for drawing test text
+
+		//MOUSE PROCESSING HAS TO BE DONE HERE
+		//gets the grid square in grid coordinates that the mouse is in, easier to pass to other objects then true coords
 	    mouseX = Gdx.input.getX(); //get mouse coordinates in screen space
 	    mouseY = Gdx.input.getY();
 	    screenMousePosition = new Vector3(mouseX, mouseY, 0 ); //switch mouse coords to camera based coords
 	    cameraMousePosition = mainCamera.unproject(screenMousePosition);
 	    Vector2 currentMouseGridSquare = backgroundGrid.findMouseOnGrid(cameraMousePosition);
+	    //END MOUSE PROCESSING
 
-	    //displays mouse coordinates on screen
+	    //displays mouse coordinates on screen for testing
 		String mouseXPos = Float.toString(backgroundGrid.findMouseOnGrid(cameraMousePosition).x);
 		String mouseYPos = Float.toString(backgroundGrid.findMouseOnGrid(cameraMousePosition).y);
 		CharSequence str = mouseXPos + " , " + mouseYPos;
 		// end mouse coord display
 
-		//for testUnit coord display
+		//for testUnit coord display for testing
 		String testUnitX = Float.toString(testUnit.currentLocation().x);
 		String testUnitY = Float.toString(testUnit.currentLocation().y);
 		CharSequence str2 = testUnitX + " , " + testUnitY;
 		//end testUnit coord display
 
-	    //gets the grid square in grid coordinates that the mouse is in, easier to pass to other objects then true coords
 		Gdx.gl.glClearColor(0, 0, 0, 1); //sets the 'clear' color for openGL (red, green, blue, alpha)
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);//clears the screen, my understanding is it sets it to the 'clear' color
 		mainCamera.update();//updates the camera every frame
-        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && selectedUnit == null && backgroundGrid.findMouseOnGrid(cameraMousePosition).x == testUnit.currentLocation().x
-				&& backgroundGrid.findMouseOnGrid(cameraMousePosition).y == testUnit.currentLocation().y){
+        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && selectedUnit == null && backgroundGrid.findMouseOnGrid(cameraMousePosition).equals(testUnit.currentLocation())){
             //selects the unit clicked on if the square says there is a unit there
             selectedUnit = testUnit;
         }
@@ -96,16 +98,18 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.draw(backgroundImg, background.x, background.y); //draw the background
 		batch.draw(gridImg, background.x, background.y); //draw the grid
 		batch.draw(testUnit.unitTextureReturn(), testUnit.getRenderCoords().x, testUnit.getRenderCoords().y);
+
+		//TEST CODE -----------------------------------------------------------------------------------
 		//draw the test unit at the clicked location
 		testFont.draw(batch, str, 140, 200);
 		testFont.draw(batch, str2, 300, 200);
 		if (selectedUnit != null){ //tests to figure out how to get shit to work
 			batch.draw(testUnit.unitTextureReturn(), 55, 55);
 		}
-		if(backgroundGrid.findMouseOnGrid(cameraMousePosition).x == testUnit.currentLocation().x
-				&& backgroundGrid.findMouseOnGrid(cameraMousePosition).y == testUnit.currentLocation().y){ //TODO trying to get this line of code to work
+		if(backgroundGrid.findMouseOnGrid(cameraMousePosition).equals(testUnit.currentLocation())){
 			batch.draw(testUnit.unitTextureReturn(), 100, 600);
 		}
+		//END TEST CODE ---------------------------------------------------------------------------------
 
 		batch.end();
 	}

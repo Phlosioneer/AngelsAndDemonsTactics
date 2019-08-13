@@ -29,14 +29,14 @@ public class LevelGrid {
         int uLXHolder; int uLYHolder; int uRXHolder; int uRYHolder; //holder ints for the individual coords
         int lLXHolder; int lLYHolder; int lRXHolder; int lRYHolder;
         String gridCoordHolder; //holds coordinate of square in grid
-        for(int i = 0; i<ySize; i++) { //iterate for every grid square vertically
+        for(int i = 1; i<=ySize; i++) { //iterate for every grid square vertically
             if(yCoord > bgSizeY){
                 break;
             }
 
             int xCoord = 0; //reset the X Coord back to 0 to generate new row
 
-            for (int i2 = 0; i2 < xSize; i2++) { //iterate for every grid square horizontally
+            for (int i2 = 1; i2 <= xSize; i2++) { //iterate for every grid square horizontally
 
                 if(xCoord > bgSizeX){
                     break;
@@ -63,9 +63,6 @@ public class LevelGrid {
         }
     }
 
-    public int gridSize(){
-        return gridSquares.size();
-    }
 
     public Vector2 getSquareOrigin(Vector2 squareLocation){ //return the lower left vertext of square whichSquare in the arrayList
         for (int i = 0; i < gridSquares.size(); i++){
@@ -76,16 +73,6 @@ public class LevelGrid {
         return new Vector2(0,0);
     }
 
-    public Vector2[] getSquareBounds(Vector2 whichSqInGrid){
-        //this returns an array of vector2's that tell the bounds for the selected square
-        //vertex bounds are given in [0] = lower left, [1] = lower right, [2] = upper left, and [3] = upper right
-        for (int i = 0; i < gridSquares.size(); i++){
-            if(whichSqInGrid == gridSquares.get(i).getSquareLocation()){
-                return gridSquares.get(i).getSquareVertices();
-            }
-        }
-        return null;
-    }
 
     public Vector2 findMouseOnGrid(Vector3 mouseCoords){
         float fMouseX = mouseCoords.x;
@@ -99,9 +86,10 @@ public class LevelGrid {
         return null;
     }
 
+    //these next functions left just in case of future use------------------------------------------------------
     public GridSquare getSquareInGrid(Vector2 whichSquare){
         for (int i = 0; i < gridSquares.size(); i++){
-            if (whichSquare == gridSquares.get(i).getSquareLocation()){
+            if (whichSquare.equals(gridSquares.get(i).getSquareLocation())){
                 return gridSquares.get(i);
             }
         }
@@ -111,5 +99,17 @@ public class LevelGrid {
     public ArrayList<GridSquare> returnGrid (){
         return gridSquares;
     }
+
+    public Vector2[] getSquareBounds(Vector2 whichSqInGrid){
+        //this returns an array of vector2's that tell the bounds for the selected square
+        //vertex bounds are given in [0] = lower left, [1] = lower right, [2] = upper left, and [3] = upper right
+        for (int i = 0; i < gridSquares.size(); i++){
+            if(whichSqInGrid == gridSquares.get(i).getSquareLocation()){
+                return gridSquares.get(i).getSquareVertices();
+            }
+        }
+        return null;
+    }
+    //-----------------------------------------------------------------------------------------------------------
 }
 

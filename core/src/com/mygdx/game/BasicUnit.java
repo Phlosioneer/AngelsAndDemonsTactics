@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 
 public class BasicUnit {
@@ -13,9 +12,9 @@ public class BasicUnit {
 
 
     BasicUnit(String textureForUnit, Vector2 unitStartingCoords, LevelGrid currentGrid){
-        unitTexture = new Texture(textureForUnit); //constructor, initalizes all our variables
-        unitCoords = unitStartingCoords;
-        currentLevelGrid = currentGrid;
+        unitTexture = new Texture(textureForUnit); //sets texture of unit
+        unitCoords = unitStartingCoords; //sets starting location of unit
+        currentLevelGrid = currentGrid; //allows the Unit to read the locations on the Grid it is on
         renderCoords = new Vector2(0,0);
     }
 
@@ -34,6 +33,6 @@ public class BasicUnit {
 
     public void setUnitCoords (Vector2 newCoords){ //updates the gridSquare that the unit is in
         unitCoords = newCoords;
-    }
+    } //used for moving the Unit
 
 }
