@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -20,7 +21,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	BasicUnit testUnit;
     BasicUnit selectedUnit = null;//unit player has selected currently
 	private OrthographicCamera mainCamera; //creates the main camera object
-	private Rectangle background;
+	//private Rectangle background;
     LevelGrid backgroundGrid;
 	private int mouseX; //ints to grab mouse coordinates
 	private int mouseY;
@@ -42,24 +43,13 @@ public class MyGdxGame extends ApplicationAdapter {
         //----------------------------------------------------------------------------------------
 
         testUnit = new BasicUnit("PeaceAngel (1).png", new Vector2(1,1), backgroundGrid);
-		background = new Rectangle(); //this will determine the position of the background
-		background.x = 0; //set the x/y coords of the background
-		background.y = 0;
 		}
 		
 
 	@Override
 	public void render () { //frame update, aka main game loop
+		handleInput();
 		BitmapFont testFont = new BitmapFont(); //for drawing test text
-
-		//MOUSE PROCESSING HAS TO BE DONE HERE
-		//gets the grid square in grid coordinates that the mouse is in, easier to pass to other objects then true coords
-	    mouseX = Gdx.input.getX(); //get mouse coordinates in screen space
-	    mouseY = Gdx.input.getY();
-	    screenMousePosition = new Vector3(mouseX, mouseY, 0 ); //switch mouse coords to camera based coords
-	    cameraMousePosition = mainCamera.unproject(screenMousePosition);
-	    Vector2 currentMouseGridSquare = backgroundGrid.findMouseOnGrid(cameraMousePosition);
-	    //END MOUSE PROCESSING
 
 	    //displays mouse coordinates on screen for testing
 		String mouseXPos = Float.toString(backgroundGrid.findMouseOnGrid(cameraMousePosition).x);
@@ -76,15 +66,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1); //sets the 'clear' color for openGL (red, green, blue, alpha)
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);//clears the screen, my understanding is it sets it to the 'clear' color
 		mainCamera.update();//updates the camera every frame
-        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && selectedUnit == null && backgroundGrid.findMouseOnGrid(cameraMousePosition).equals(testUnit.currentLocation())){
-            //selects the unit clicked on if the square says there is a unit there
-            selectedUnit = testUnit;
-        }
-        else if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && selectedUnit != null){ //update unit position on click, if a unit is selected
-            currentUnitCoords = currentMouseGridSquare;
-            selectedUnit.setUnitCoords(currentUnitCoords);
-            selectedUnit = null; //deselects the unit
-        }
+
         //TEMP CODE------------------------------------------------------------------------------------------------
 
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){ //terminates program when escape is pressed, until a UI exit is coded
@@ -95,8 +77,8 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch.setProjectionMatrix(mainCamera.combined);//tells the batch system to use the camera's coord system
 		batch.begin(); //used to please openGL. everything between batch.begin and batch.end will render
 		//once the batch.end command is sent
-		batch.draw(backgroundImg, background.x, background.y); //draw the background
-		batch.draw(gridImg, background.x, background.y); //draw the grid
+		batch.draw(backgroundImg, 0, 0); //draw the background
+		batch.draw(gridImg, 0,0); //draw the grid
 		batch.draw(testUnit.unitTextureReturn(), testUnit.getRenderCoords().x, testUnit.getRenderCoords().y);
 
 		//TEST CODE -----------------------------------------------------------------------------------
@@ -121,4 +103,50 @@ public class MyGdxGame extends ApplicationAdapter {
         gridImg.dispose();
         testUnit.unitTextureReturn().dispose();
 	}
+    private void handleInput() { //function to handle input processing
+		//MOUSE PROCESSING
+		//gets the grid square in grid coordinates that the mouse is in, easier to pass to other objects then true coords
+		mouseX = Gdx.input.getX(); //get mouse coordinates in screen space
+		mouseY = Gdx.input.getY();
+		screenMousePosition = new Vector3(mouseX, mouseY, 0 ); //switch mouse coords to camera based coords
+		cameraMousePosition = mainCamera.unproject(screenMousePosition);
+		Vector2 currentMouseGridSquare = backgroundGrid.findMouseOnGrid(cameraMousePosition);
+		//END MOUSE PROCESSING
+
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) { //camera controls taken from libgdx wiki, can edit as needed
+            mainCamera.zoom += 0.02;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
+            mainCamera.zoom -= 0.02;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            mainCamera.translate(-3, 0, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            mainCamera.translate(3, 0, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            mainCamera.translate(0, -3, 0);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            mainCamera.translate(0, 3, 0);
+        }
+		if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && selectedUnit == null && backgroundGrid.findMouseOnGrid(cameraMousePosition).equals(testUnit.currentLocation())){
+			//selects the unit clicked on if the square says there is a unit there
+			selectedUnit = testUnit;
+		}
+		else if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT) && selectedUnit != null){ //update unit position on click, if a unit is selected
+			currentUnitCoords = currentMouseGridSquare;
+			selectedUnit.setUnitCoords(currentUnitCoords);
+			selectedUnit = null; //deselects the unit
+		}
+
+        mainCamera.zoom = MathUtils.clamp(mainCamera.zoom, 0.1f, backgroundImg.getHeight()/mainCamera.viewportWidth);
+
+        float effectiveViewportWidth = mainCamera.viewportWidth * mainCamera.zoom;
+        float effectiveViewportHeight = mainCamera.viewportHeight * mainCamera.zoom;
+
+		mainCamera.position.x = MathUtils.clamp(mainCamera.position.x, effectiveViewportWidth / 2f, backgroundImg.getWidth() - effectiveViewportWidth / 2f);
+		mainCamera.position.y = MathUtils.clamp(mainCamera.position.y, effectiveViewportHeight / 2f, backgroundImg.getHeight() - effectiveViewportHeight / 2f);
+    }
 }
