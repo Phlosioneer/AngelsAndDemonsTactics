@@ -13,21 +13,25 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-
+//TODO figure out how handling multiple units will work
+//TODO begin the process of implementing UI
 public class MyGdxGame extends ApplicationAdapter {
+
+	//This section is all fields that have to be initialized in the MyGdxGame.java class-------------------------
 	SpriteBatch batch; //class used to draw 2D images
-    public Texture backgroundImg; //create a texture object (stored in VRAM)
-	Texture gridImg; //stores the grid in VRAM
-	BasicUnit testUnit;
-    BasicUnit selectedUnit = null;//unit player has selected currently
-	private OrthographicCamera mainCamera; //creates the main camera object
-	//private Rectangle background;
-    LevelGrid backgroundGrid;
-	private int mouseX; //ints to grab mouse coordinates
-	private int mouseY;
+	//these have to be vector3, due to how the coordinate system works
 	private Vector3 screenMousePosition; // holds the mouse coordinates in screen coordinates (origin at top right)
 	private Vector3 cameraMousePosition; //holds the mouse coordinates in world/camera coordinates (origin at bottom right)
-    Vector2 currentUnitCoords = new Vector2(1, 1); //vector to start test unit at origin square
+	//-----------------------------------------------------------------------------------------------------------
+
+	//This section is all fields that will eventually be moved to a different class------------------------------
+	public Texture backgroundImg; //create a texture object (stored in VRAM)
+	Texture gridImg; //stores the grid in VRAM
+	BasicUnit testUnit;
+	BasicUnit selectedUnit = null;//unit player has selected currently
+	private OrthographicCamera mainCamera; //creates the main camera object
+	LevelGrid backgroundGrid;
+	//-----------------------------------------------------------------------------------------------------------
 
 	@Override
 	public void create () { //runs once on game startup
@@ -67,11 +71,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);//clears the screen, my understanding is it sets it to the 'clear' color
 		mainCamera.update();//updates the camera every frame
 
-        //TEMP CODE------------------------------------------------------------------------------------------------
-
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){ //terminates program when escape is pressed, until a UI exit is coded
-            Gdx.app.exit();
-        }
 
         //TEMP CODE ENDS--------------------------------------------------------------------------------------------
 		batch.setProjectionMatrix(mainCamera.combined);//tells the batch system to use the camera's coord system
@@ -106,12 +105,19 @@ public class MyGdxGame extends ApplicationAdapter {
     private void handleInput() { //function to handle input processing
 		//MOUSE PROCESSING
 		//gets the grid square in grid coordinates that the mouse is in, easier to pass to other objects then true coords
-		mouseX = Gdx.input.getX(); //get mouse coordinates in screen space
-		mouseY = Gdx.input.getY();
+		Vector2 currentUnitCoords; //vector to start test unit at origin square
+		int mouseX = Gdx.input.getX(); //get mouse coordinates in screen space
+		int mouseY = Gdx.input.getY();
 		screenMousePosition = new Vector3(mouseX, mouseY, 0 ); //switch mouse coords to camera based coords
 		cameraMousePosition = mainCamera.unproject(screenMousePosition);
 		Vector2 currentMouseGridSquare = backgroundGrid.findMouseOnGrid(cameraMousePosition);
 		//END MOUSE PROCESSING
+
+		//TEMP CODE------------------------------------------------------------------------------------------------
+
+		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){ //terminates program when escape is pressed, until a UI exit is coded
+			Gdx.app.exit();
+		}
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) { //camera controls taken from libgdx wiki, can edit as needed
             mainCamera.zoom += 0.02;
